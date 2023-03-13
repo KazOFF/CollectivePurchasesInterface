@@ -1,0 +1,55 @@
+syntax = "proto3";
+
+package ru.kazov.collectivepurchases.interfaces;
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "ru.kazov.collectivepurchases.protomodels";
+
+
+service CPGrpcService {
+  rpc FetchJob (google.protobuf.Empty) returns (ParserJobResponseProto);
+  rpc RequestCode (CodeRequestProto) returns (CodeResponseProto);
+  rpc HandleError (ErrorRequestProto) returns (google.protobuf.Empty);
+  rpc AddItems (AddItemsRequestProto) returns (google.protobuf.Empty);
+}
+
+message CodeRequestProto{
+  int64 parser_job_id = 1;
+}
+
+message CodeResponseProto{
+  string code = 1;
+}
+
+message ErrorRequestProto{
+  int64 parser_job_id = 1;
+  string message = 2;
+}
+
+message AddItemsRequestProto{
+  int64 parser_job_id = 1;
+  repeated ParserItemProto items = 2;
+}
+
+message ParserItemProto {
+  string name = 1;
+  int64 parser_job_id = 2;
+  string description = 3;
+  string url = 4;
+  repeated string pictures = 5;
+  map<string,double> prices = 6;
+  map<string,string> properties = 7;
+}
+
+message ParserJobResponseProto {
+  int64 id = 1;
+  string url = 2;
+  ParserShopProto shop = 3;
+}
+
+message ParserShopProto {
+  bool need_login = 1;
+  string login = 2;
+  string password = 3;
+}
